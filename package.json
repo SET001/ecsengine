@@ -1,0 +1,23 @@
+{
+  "name": "tecs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha specs/**/*.spec.js",
+    "test:watch": "nodemon --watch dist --watch specs --exec mocha dist/specs/*.spec.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.3",
+    "@types/rx": "^4.1.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "sinon": "^6.0.0"
+  },
+  "dependencies": {
+    "rxjs": "^6.2.1"
+  }
+}
