@@ -1,13 +1,13 @@
 {
-  "name": "tecs",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ecsengine",
+  "version": "0.0.1",
+  "description": "Simple entity component system (ECS) engine for JavaScript",
   "main": "index.js",
   "scripts": {
     "test": "mocha specs/**/*.spec.js",
     "test:watch": "nodemon --watch dist --watch specs --exec mocha dist/specs/*.spec.js"
   },
-  "author": "",
+  "author": "SET001",
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.1.4",
