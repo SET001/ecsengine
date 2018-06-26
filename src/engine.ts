@@ -5,10 +5,8 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 export class Engine{
-	systems: Map<{new(): System}, System> = new Map()
+	systems: Map<{new(args?): ISystem}, System<any>> = new Map()
 	entities: Entity[] = []
-	// entityAdded: Subject<Entity> = new Subject()
-	// entityRemoved: Subject<Entity> = new Subject()
 	componentAdded: Subject<Component> = new Subject()
 	componentRemoved: Subject<Component> = new Subject()
 	
@@ -34,28 +32,29 @@ export class Engine{
 		this.entities = this.entities.filter(e=>e.id !== entity.id)
 	}
 
-	addSystem(systemClass: {new(): System}): System{
+	addSystem<T>(systemClass: {new(args?): System<T>}): System<T>{
 		if (!this.systems.has(systemClass)){
-			const system: System = new systemClass()
-			const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.targets)))
+			const system: System<any> = new systemClass()
+			const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
 
 			this.systems.set(systemClass, system)
-
-			system.componentAdded = this.componentAdded.pipe(hasComponents)
-			system.componentRemoved = this.componentRemoved.pipe(hasComponents)
-			system.components = this.getEntitiesWithSystemComponents(system)
+			system.init(
+				this.getEntitiesWithSystemComponents(system),
+				this.componentAdded.pipe(hasComponents),
+				this.componentRemoved.pipe(hasComponents)
+			)
 			return system
 		}
 	}
 	
-	removeSystem(systemClass: {new(): System}){
+	removeSystem(systemClass: {new(): System<any>}){
 		if (!this.systems.has(systemClass)){
 			this.systems.delete(systemClass)
 		}
 	}
 
-	getEntitiesWithSystemComponents(system: System): Entity[]{
-		return this.entities.filter((entity: Entity)=>entity.hasComponents(Object.values(system.targets)))
+	getEntitiesWithSystemComponents(system: System<any>): Entity[]{
+		return this.entities.filter((entity: Entity)=>entity.hasComponents(Object.values(system.groupComponents)))
 	}
 
 }

@@ -1,24 +1,21 @@
-import { Engine, System, Component, Entity } from '../src'
+import "reflect-metadata";
+import { Engine, System, Component, Entity, componentsGroup } from '../src'
 import { assert } from 'chai'
 import * as sinon from 'sinon';
+
 
 class TestComponent extends Component{}
 class FooComponent extends Component{
 	constructor(public name: string =''){super()}
 }
 
-class TestSystemComponents {
-	test: TestComponent
-	foo: FooComponent
+class TestSystemGroup {
+	test: TestComponent = new TestComponent()
+	foo: FooComponent = new FooComponent()
 }
 
-class TestSystem extends System{
-	targets = {
-		test: TestComponent,
-		foo: FooComponent
-	}
-	components: TestSystemComponents[] = []
-}
+@componentsGroup(TestSystemGroup)
+class TestSystem<T extends TestSystemGroup> extends System<T>{}
 
 class TestEntity extends Entity{
 	constructor(){
@@ -31,6 +28,7 @@ class TestEntity extends Entity{
 class WrongSystem{}
 
 describe('Engine', ()=>{
+
 	var engine: Engine
 	beforeEach(()=>{
 		engine = new Engine()
@@ -46,7 +44,7 @@ describe('Engine', ()=>{
 			engine.addEntity(new TestEntity())
 			engine.addSystem(TestSystem)
 			const system = engine.systems.get(TestSystem)
-			assert.equal(system.components.length, 1)
+			assert.equal(system.componentGroups.length, 1)
 		})
 
 		it('it should get matching added components throught observable object', ()=>{
