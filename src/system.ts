@@ -47,7 +47,7 @@ export class System<T>{
 		Object.entries(this.groupComponents).forEach(
 			([key, value]) => group[key] = component.entity.components.get(value)
 		)
-		this.componentGroups.push(group)
+		this.addComponentsGroup(group)
 	}
 
 	addComponentsGroup(group: T){
