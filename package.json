@@ -2,10 +2,18 @@
   "name": "ecsengine",
   "version": "0.0.3",
   "description": "Simple entity component system (ECS) engine for JavaScript",
-  "main": "src/index.js",
+  "main": "dist/index",
+  "typings": "dist/index",
   "scripts": {
     "test": "mocha specs/**/*.spec.js",
     "test:watch": "nodemon --watch dist --watch specs --exec mocha dist/specs/*.spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SET001/ecsengine"
+  },
+  "bugs": {
+    "url": "https://github.com/SET001/ecsengine/issues"
   },
   "author": "SET001",
   "license": "ISC",
