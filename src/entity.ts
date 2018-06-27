@@ -1,5 +1,5 @@
 import { Component } from "./component";
-import { Subject } from "rx";
+import { Subject } from "rxjs";
 
 export class Entity{
 	static _id: number = 0
