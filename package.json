@@ -1,6 +1,6 @@
 {
   "name": "ecsengine",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Simple entity component system (ECS) engine for JavaScript",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
