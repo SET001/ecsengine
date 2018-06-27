@@ -46,3 +46,26 @@ class PhysicSystem extends System<PhysicComponentGroup>{
 }
 ```
 Also note that this code use decorators so you must have `"experimentalDecorators": true,` in your `tsconfig.json`
+
+5. Define class for your entity:
+```TypeScript
+class GameObject extends Entity{
+	constructor(){
+		super()
+		this.add(PhysicComponent, {})
+		this.add(PositionComponent, {})
+	}
+}
+```
+
+6. Ddd system and entity to engine and run it:
+```TypeScript
+const gameObject = new GameObject()
+engine.addSystem(PhysicSystem)
+engine.addEntity(gameObject)
+
+setInterval(()=>{
+  engine.update()
+  console.log(gameObject.components.get(PositionComponent))
+}, 100)
+```

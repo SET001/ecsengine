@@ -34,7 +34,9 @@ export class System<T>{
 		)
 	}
 
-	update(){}
+	update(){
+		this.componentGroups.forEach(context=>this.execute(context))
+	}
 
 	execute(context: T){}
 	componentAdded: Observable<Component>
