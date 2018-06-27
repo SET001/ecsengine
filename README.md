@@ -17,9 +17,9 @@ const engine = new Engine()
 
 ```TypeScript
 class PositionComponent extends Component{
-	x: number = 0
-	y: number = 0
-	z: number = 0
+  x: number = 0
+  y: number = 0
+  z: number = 0
 }
 
 class PhysicComponent extends Component{}
@@ -30,8 +30,8 @@ Component may be an empty class - just to point that entity with that component 
 
 ```TypeScript
 class PhysicComponentGroup{
-	position: PositionComponent = new PositionComponent()
-	physic: PhysicComponent = new PhysicComponent()
+  position: PositionComponent = new PositionComponent()
+  physic: PhysicComponent = new PhysicComponent()
 }
 ```
 
@@ -40,9 +40,9 @@ class PhysicComponentGroup{
 ```TypeScript
 @componentsGroup(PhysicComponent)
 class PhysicSystem extends System<PhysicComponentGroup>{
-	execute(content: PhysicComponentGroup){
-		content.position.x -= 9.8
-	}
+  execute(content: PhysicComponentGroup){
+    content.position.x -= 9.8
+  }
 }
 ```
 Also note that this code use decorators so you must have `"experimentalDecorators": true,` in your `tsconfig.json`
@@ -50,15 +50,15 @@ Also note that this code use decorators so you must have `"experimentalDecorator
 5. Define class for your entity:
 ```TypeScript
 class GameObject extends Entity{
-	constructor(){
-		super()
-		this.add(PhysicComponent, {})
-		this.add(PositionComponent, {})
-	}
+  constructor(){
+    super()
+    this.add(PhysicComponent, {})
+    this.add(PositionComponent, {})
+  }
 }
 ```
 
-6. Ddd system and entity to engine and run it:
+6. Add system and entity to engine and run it:
 ```TypeScript
 const gameObject = new GameObject()
 engine.addSystem(PhysicSystem)
