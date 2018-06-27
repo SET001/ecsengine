@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { Entity, Component } from "../";
+import { Entity, Component } from "../index";
 
 class TestComponent extends Component{}
 class FooComponent extends Component{

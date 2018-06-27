@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Engine, System, Component, Entity, componentsGroup } from '../'
+import { Engine, System, Component, Entity, componentsGroup } from '../index'
 import { assert } from 'chai'
 import * as sinon from 'sinon';
 
