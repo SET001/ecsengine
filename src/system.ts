@@ -16,7 +16,7 @@ export function componentsGroup(constructor){
 	}
 }
 
-type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
+export type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
 
 export class System<T>{
 	componentGroups: T[] = []

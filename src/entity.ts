@@ -1,4 +1,4 @@
-import { Component } from ".";
+import { Component } from "./component";
 import { Subject } from "rx";
 
 export class Entity{

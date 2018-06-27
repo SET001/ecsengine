@@ -1,6 +1,6 @@
 import { ISystem, System } from './system'
 import { Entity } from './entity';
-import { Component } from '.';
+import { Component } from './component';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
