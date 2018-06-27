@@ -20,5 +20,10 @@
   "dependencies": {
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.1"
-  }
+  },
+  "files": [
+    "dist/index.d.ts",
+    "dist/index.js",
+    "dist/src"
+  ]
 }
