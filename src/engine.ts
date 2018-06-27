@@ -33,18 +33,17 @@ export class Engine{
 	}
 
 	addSystem<T>(systemClass: {new(args?): System<T>}): System<T>{
-		if (!this.systems.has(systemClass)){
-			const system: System<any> = new systemClass()
-			const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
+		if (this.systems.has(systemClass)) return this.systems.get(systemClass)
+		const system: System<any> = new systemClass()
+		const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
 
-			this.systems.set(systemClass, system)
-			system.init(
-				this.getEntitiesWithSystemComponents(system),
-				this.componentAdded.pipe(hasComponents),
-				this.componentRemoved.pipe(hasComponents)
-			)
-			return system
-		}
+		this.systems.set(systemClass, system)
+		system.init(
+			this.getEntitiesWithSystemComponents(system),
+			this.componentAdded.pipe(hasComponents),
+			this.componentRemoved.pipe(hasComponents)
+		)
+		return system
 	}
 	
 	removeSystem(systemClass: {new(): System<any>}){

@@ -19,7 +19,7 @@ export function componentsGroup(constructor){
 export type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
 
 export class System<T>{
-	componentGroups: T[] = []
+	componentGroups: Map<number, T> = new Map()
 	groupComponents: ComponentsGroupDefinition
 
 	constructor(groupComponents?: T){
@@ -43,16 +43,17 @@ export class System<T>{
 	componentRemoved: Observable<Component>
 
 	add(component: Component){
-		const group: T = {} as T
-		Object.entries(this.groupComponents).forEach(
-			([key, value]) => group[key] = component.entity.components.get(value)
-		)
-		this.addComponentsGroup(group)
+		if (this.componentGroups.has(component.entity.id)) return false
+		const group: T = this.getComponentsGroupFromEntity(component.entity)
+		this.addComponentsGroup(group, component.entity)
 	}
 
-	addComponentsGroup(group: T){
-		this.componentGroups.push(group)
+	addComponentsGroup(group: T, entity: Entity){
+		this.componentGroups.set(entity.id, group)
+		this.onNewGroup(group, entity)
 	}
+
+	onNewGroup(group: T, entity: Entity){}
 
 	getComponentsGroupFromEntity(entity: Entity){
 		const group: T = {} as T
@@ -67,7 +68,7 @@ export class System<T>{
 
 	init(entities: Entity[], componentAdded: Observable<Component>, componentRemoved: Observable<Component>){
 		entities.map(entity=>{
-			this.addComponentsGroup(this.getComponentsGroupFromEntity(entity))
+			this.addComponentsGroup(this.getComponentsGroupFromEntity(entity), entity)
 		})
 		this.componentAdded = componentAdded
 		this.componentRemoved = componentRemoved

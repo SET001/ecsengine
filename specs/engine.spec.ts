@@ -40,19 +40,21 @@ describe('Engine', ()=>{
 			assert.isTrue(engine.systems.has(TestSystem))
 		})
 
-		it('should pass array of components', ()=>{
+		it('should add existing components', ()=>{
 			engine.addEntity(new TestEntity())
 			engine.addSystem(TestSystem)
 			const system = engine.systems.get(TestSystem)
-			assert.equal(system.componentGroups.length, 1)
+			assert.equal(system.componentGroups.size, 1)
 		})
 
 		it('it should get matching added components throught observable object', ()=>{
 			const onComponentAdded = sinon.spy()
-			engine.addSystem(TestSystem)
+			const system = engine.addSystem(TestSystem)
 			engine.componentAdded.subscribe(onComponentAdded)
 			engine.addEntity(new TestEntity())
+			
 			assert.isTrue(onComponentAdded.called)
+			assert.equal(system.componentGroups.size, 1)
 		})
 
 		it('it should not get not-matching added components throught observable object', ()=>{
