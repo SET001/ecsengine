@@ -49,6 +49,7 @@ export class System<T>{
 	}
 
 	addComponentsGroup(group: T, entity: Entity){
+		if (this.componentGroups.has(entity.id)) return false
 		this.componentGroups.set(entity.id, group)
 		this.onNewGroup(group, entity)
 	}
