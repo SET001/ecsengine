@@ -10,12 +10,14 @@ export class Entity{
 
 	add(componentClass: {new(data?): Component}, data?: any){
 		if (this.components.has(componentClass)) return false;
-		const component = new componentClass(data)
+		const component = new componentClass()
+		Object.assign(component, data)
 		component.entity = this
 		this.components.set(componentClass, component)
 		if (this.componentAdded){
 			this.componentAdded.next(component)
 		}
+		return component
 	}
 
 	remove(componentClass: {new(data?): Component}){

@@ -3,7 +3,7 @@ import { Entity, Component } from "../index";
 
 class TestComponent extends Component{}
 class FooComponent extends Component{
-	constructor(public name: string =''){super()}
+	constructor(public name: string ='lol'){super()}
 }
 
 describe('entity', ()=>{
@@ -16,6 +16,14 @@ describe('entity', ()=>{
 		})
 	})
 
+	describe('add', ()=>{
+		it('should override default values when creating component instance', ()=>{
+			const entity = new Entity();
+			entity.add(FooComponent, {name: 'lil'});
+			const component = entity.components.get(FooComponent) as FooComponent;
+			assert.equal(component.name, 'lil')
+		})
+	})
 	describe('hasComponents', ()=>{
 		it('should return false if no components', ()=>{
 			const entity = new Entity();
