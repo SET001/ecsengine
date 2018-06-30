@@ -8,8 +8,8 @@ export class Entity{
 	componentAdded: Subject<Component>
 	componentRemoved: Subject<Component>
 
-	add(componentClass: {new(data?): Component}, data?: any): Component{
-		if (this.components.has(componentClass)) return this.components.get(componentClass);
+	add<T extends Component>(componentClass: {new(data?): T}, data?: any): T{
+		if (this.components.has(componentClass)) return this.components.get(componentClass) as T;
 		const component = new componentClass()
 		Object.assign(component, data)
 		component.entity = this

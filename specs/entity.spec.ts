@@ -19,8 +19,7 @@ describe('entity', ()=>{
 	describe('add', ()=>{
 		it('should override default values when creating component instance', ()=>{
 			const entity = new Entity();
-			entity.add(FooComponent, {name: 'lil'});
-			const component = entity.components.get(FooComponent) as FooComponent;
+			const component = entity.add(FooComponent, {name: 'lil'});
 			assert.equal(component.name, 'lil')
 		})
 	})
