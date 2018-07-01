@@ -1,3 +1,6 @@
+
+* THIS LIBRARY IS CURRENTLY IN ACTIVE DEVELOPMENET, THINGS WILL SIGNIFICANTLY CHANGE IN NEAREST FUTURE! *
+
 # ecsengine
 Simple Entity-Component-System (ECS) engine for JavaScript written in TypeScript.
 
