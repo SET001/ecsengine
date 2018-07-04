@@ -5,13 +5,13 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 export class Engine{
-	systems: Map<{new(args?): System<any, any>}, System<any, any>> = new Map()
+	systems: Map<{new(args?): System<any>}, System<any>> = new Map()
 	entities: Entity[] = []
 	componentAdded: Subject<Component> = new Subject()
 	componentRemoved: Subject<Component> = new Subject()
 	
 	update(){
-		this.systems.forEach((system, systemClass)=>{
+		this.systems.forEach(system=>{
 			system.update()
 		})
 	}
@@ -32,12 +32,9 @@ export class Engine{
 		this.entities = this.entities.filter(e=>e.id !== entity.id)
 	}
 
-	addSystem<G, C, S extends System<G, C>>(systemClass: {new(args?): S}, systemConfig?: C): S{
-		if (this.systems.has(systemClass)) return this.systems.get(systemClass) as S
-		const system: S = new systemClass()
-		if (systemConfig){
-			system.configure(systemConfig)
-		}
+	_addSystem<G, T extends System<G>>(system: T): T{
+		const systemClass = system.constructor as {new(args?): T}
+		if (this.systems.has(systemClass)) return this.systems.get(systemClass) as T
 		const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
 
 		this.systems.set(systemClass, system)
@@ -48,14 +45,32 @@ export class Engine{
 		)
 		return system
 	}
+
+	addSystem<G, T extends System<G>>(system: {new(args?): T} | T): T	{
+		if (typeof system === 'function'){
+			return this._addSystem(new system())
+		} else {
+			return this._addSystem(system)
+		}
+	}
+
+	addSystems(...systems: Array<{new(args?): System<any>}|System<any>>): System<any>[] {
+		return systems.map((system: System<any>)=>{
+			return this.addSystem(system)
+		})
+	}
 	
-	removeSystem<T, C>(systemClass: {new(): System<T, C>}){
+	removeSystem(systemClass: {new(): System<any>}){
 		if (!this.systems.has(systemClass)){
 			this.systems.delete(systemClass)
 		}
 	}
 
-	getEntitiesWithSystemComponents(system: System<any, any>): Entity[]{
+	get(systemClass: {new(): System<any>}): System<any>{
+		return this.systems.get(systemClass)
+	}
+
+	getEntitiesWithSystemComponents(system: System<any>): Entity[]{
 		return this.entities.filter((entity: Entity)=>entity.hasComponents(Object.values(system.groupComponents)))
 	}
 

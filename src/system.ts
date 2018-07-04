@@ -18,19 +18,9 @@ export function componentsGroup(constructor){
 
 export type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
 
-export class System<T, C>{
+export class System<T>{
 	componentGroups: Map<number, T> = new Map()
 	groupComponents: ComponentsGroupDefinition
-
-	constructor(groupComponents?: T){
-		if (groupComponents){
-			this.setGroupComponents(groupComponents)
-		}
-	}
-
-	configure(config: C){
-		Object.assign(this, config)
-	}
 
 	setGroupComponents(groupComponents: T){
 		Object.entries(groupComponents).forEach(

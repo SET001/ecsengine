@@ -14,16 +14,18 @@ class TestSystemGroup {
 	foo: FooComponent = new FooComponent()
 }
 
-
-interface TestSystemConfig{
-	name: string
+@componentsGroup(TestSystemGroup)
+class TestSystem extends System<TestSystemGroup>{
 	age: number
+	constructor(public name: string){super()}
 }
 
-@componentsGroup(TestSystemGroup)
-class TestSystem extends System<TestSystemGroup, TestSystemConfig> implements TestSystemConfig{
-	name: string
-	age: number
+class FooSystemGroup {
+	foo: FooComponent = new FooComponent()
+}
+@componentsGroup(FooSystemGroup)
+class FooSystem extends System<FooSystemGroup>{
+	foo: string
 }
 
 class TestEntity extends Entity{
@@ -43,11 +45,49 @@ describe('Engine', ()=>{
 		engine = new Engine()
 	})
 
-	describe('addSystem', ()=>{
-		it('should configure system', ()=>{
-			const system = engine.addSystem(TestSystem, {name: 'blah'})
-			assert.equal(system.name, 'blah')
+	describe('get', ()=>{
+		it('should return system', ()=>{
+			engine.addSystem(new FooSystem())
+			const system = engine.get(FooSystem)
+			assert.equal(system.constructor, FooSystem)
 		})
+	})
+
+	describe('addSystem', ()=>{
+		describe('signatures', ()=>{
+			it('single instanse', ()=>{
+				const system = engine.addSystem(new FooSystem())
+				assert.equal(system.constructor, FooSystem)
+			})
+
+			it('single constructor', ()=>{
+				const system = engine.addSystem(FooSystem)
+				assert.equal(system.constructor, FooSystem)
+			})
+
+			it('multiple instances', ()=>{
+				const [testSystem, fooSystem] = engine.addSystems(
+					new TestSystem('blah'),
+					new FooSystem()
+				)
+				assert.equal((testSystem as TestSystem).name, 'blah')
+				assert.equal(fooSystem.constructor, FooSystem)
+				assert.equal(testSystem.constructor, TestSystem)
+			})
+
+			it('multiple constructors', ()=>{
+				const [testSystem, fooSystem] = engine.addSystems(TestSystem,	FooSystem)
+				assert.equal(fooSystem.constructor, FooSystem)
+				assert.equal(testSystem.constructor, TestSystem)
+			})
+
+			it('mixed instances and constructors', ()=>{
+				const [testSystem, fooSystem] = engine.addSystems(TestSystem,	new FooSystem())
+				assert.equal(fooSystem.constructor, FooSystem)
+				assert.equal(testSystem.constructor, TestSystem)
+			})
+		})
+
 		it('should add system instanse to hasmap', ()=>{
 			engine.addSystem(TestSystem)
 			assert.isTrue(engine.systems.has(TestSystem))
