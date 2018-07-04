@@ -60,13 +60,13 @@ export class Engine{
 		})
 	}
 	
-	removeSystem(systemClass: {new(): System<any>}){
+	removeSystem(systemClass: {new(args?): System<any>}){
 		if (!this.systems.has(systemClass)){
 			this.systems.delete(systemClass)
 		}
 	}
 
-	get<T>(system: {new(): System<T>} | string): System<T>{
+	get<T>(system: {new(args?): System<T>} | string): System<T>{
 		if (typeof system === 'string'){
 			var res: System<T>
 			this.systems.forEach(s=>{
