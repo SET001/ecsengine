@@ -66,7 +66,7 @@ export class Engine{
 		}
 	}
 
-	get<T>(system: {new(args?): System<T>} | string): System<T>{
+	get<T, S extends System<T>>(system: {new(args?): S} | string): S{
 		if (typeof system === 'string'){
 			var res: System<T>
 			this.systems.forEach(s=>{
@@ -74,9 +74,9 @@ export class Engine{
 					res = s
 				}
 			})
-			return res
+			return res as S
 		} else {
-			return this.systems.get(system)
+			return this.systems.get(system) as S
 		}
 	}
 
