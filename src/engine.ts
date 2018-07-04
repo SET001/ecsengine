@@ -55,9 +55,7 @@ export class Engine{
 	}
 
 	addSystems(...systems: Array<{new(args?): System<any>}|System<any>>): System<any>[] {
-		return systems.map((system: System<any>)=>{
-			return this.addSystem(system)
-		})
+		return systems.map(this.addSystem.bind(this))
 	}
 	
 	removeSystem(systemClass: {new(args?): System<any>}){
