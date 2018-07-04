@@ -66,9 +66,9 @@ export class Engine{
 		}
 	}
 
-	get(system: {new(): System<any>} | string): System<any>{
+	get<T>(system: {new(): System<T>} | string): System<T>{
 		if (typeof system === 'string'){
-			var res: System<any>
+			var res: System<T>
 			this.systems.forEach(s=>{
 				if (s.name === system){
 					res = s
