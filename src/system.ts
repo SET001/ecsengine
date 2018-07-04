@@ -18,7 +18,7 @@ export function componentsGroup(constructor){
 
 export type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
 
-export class System<T>{
+export class System<T, C>{
 	componentGroups: Map<number, T> = new Map()
 	groupComponents: ComponentsGroupDefinition
 
@@ -26,6 +26,10 @@ export class System<T>{
 		if (groupComponents){
 			this.setGroupComponents(groupComponents)
 		}
+	}
+
+	configure(config: C){
+		Object.assign(this, config)
 	}
 
 	setGroupComponents(groupComponents: T){

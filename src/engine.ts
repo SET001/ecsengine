@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 export class Engine{
-	systems: Map<{new(args?): ISystem}, System<any>> = new Map()
+	systems: Map<{new(args?): System<any, any>}, System<any, any>> = new Map()
 	entities: Entity[] = []
 	componentAdded: Subject<Component> = new Subject()
 	componentRemoved: Subject<Component> = new Subject()
@@ -32,9 +32,12 @@ export class Engine{
 		this.entities = this.entities.filter(e=>e.id !== entity.id)
 	}
 
-	addSystem<T>(systemClass: {new(args?): System<T>}): System<T>{
-		if (this.systems.has(systemClass)) return this.systems.get(systemClass)
-		const system: System<any> = new systemClass()
+	addSystem<G, C, S extends System<G, C>>(systemClass: {new(args?): S}, systemConfig?: C): S{
+		if (this.systems.has(systemClass)) return this.systems.get(systemClass) as S
+		const system: S = new systemClass()
+		if (systemConfig){
+			system.configure(systemConfig)
+		}
 		const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
 
 		this.systems.set(systemClass, system)
@@ -46,13 +49,13 @@ export class Engine{
 		return system
 	}
 	
-	removeSystem(systemClass: {new(): System<any>}){
+	removeSystem<T, C>(systemClass: {new(): System<T, C>}){
 		if (!this.systems.has(systemClass)){
 			this.systems.delete(systemClass)
 		}
 	}
 
-	getEntitiesWithSystemComponents(system: System<any>): Entity[]{
+	getEntitiesWithSystemComponents(system: System<any, any>): Entity[]{
 		return this.entities.filter((entity: Entity)=>entity.hasComponents(Object.values(system.groupComponents)))
 	}
 

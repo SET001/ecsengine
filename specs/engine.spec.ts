@@ -14,8 +14,17 @@ class TestSystemGroup {
 	foo: FooComponent = new FooComponent()
 }
 
+
+interface TestSystemConfig{
+	name: string
+	age: number
+}
+
 @componentsGroup(TestSystemGroup)
-class TestSystem<T extends TestSystemGroup> extends System<T>{}
+class TestSystem extends System<TestSystemGroup, TestSystemConfig> implements TestSystemConfig{
+	name: string
+	age: number
+}
 
 class TestEntity extends Entity{
 	constructor(){
@@ -35,6 +44,10 @@ describe('Engine', ()=>{
 	})
 
 	describe('addSystem', ()=>{
+		it('should configure system', ()=>{
+			const system = engine.addSystem(TestSystem, {name: 'blah'})
+			assert.equal(system.name, 'blah')
+		})
 		it('should add system instanse to hasmap', ()=>{
 			engine.addSystem(TestSystem)
 			assert.isTrue(engine.systems.has(TestSystem))
