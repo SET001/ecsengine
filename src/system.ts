@@ -19,6 +19,7 @@ export function componentsGroup(constructor){
 export type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
 
 export class System<T>{
+	name: string
 	componentGroups: Map<number, T> = new Map()
 	groupComponents: ComponentsGroupDefinition
 

@@ -36,7 +36,7 @@ export class Engine{
 		const systemClass = system.constructor as {new(args?): T}
 		if (this.systems.has(systemClass)) return this.systems.get(systemClass) as T
 		const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
-
+		system.name = systemClass.name
 		this.systems.set(systemClass, system)
 		system.init(
 			this.getEntitiesWithSystemComponents(system),
@@ -66,8 +66,18 @@ export class Engine{
 		}
 	}
 
-	get(systemClass: {new(): System<any>}): System<any>{
-		return this.systems.get(systemClass)
+	get(system: {new(): System<any>} | string): System<any>{
+		if (typeof system === 'string'){
+			var res: System<any>
+			this.systems.forEach(s=>{
+				if (s.name === system){
+					res = s
+				}
+			})
+			return res
+		} else {
+			return this.systems.get(system)
+		}
 	}
 
 	getEntitiesWithSystemComponents(system: System<any>): Entity[]{

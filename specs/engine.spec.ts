@@ -16,8 +16,7 @@ class TestSystemGroup {
 
 @componentsGroup(TestSystemGroup)
 class TestSystem extends System<TestSystemGroup>{
-	age: number
-	constructor(public name: string){super()}
+	constructor(public age: number){super()}
 }
 
 class FooSystemGroup {
@@ -46,9 +45,16 @@ describe('Engine', ()=>{
 	})
 
 	describe('get', ()=>{
-		it('should return system', ()=>{
+		it('should return system by class', ()=>{
 			engine.addSystem(new FooSystem())
 			const system = engine.get(FooSystem)
+			assert.equal(system.constructor, FooSystem)
+		})
+
+		it('should return system by name', ()=>{
+			engine.addSystem(new FooSystem())
+			const system = engine.get('FooSystem')
+			assert.isDefined(system)
 			assert.equal(system.constructor, FooSystem)
 		})
 	})
@@ -67,10 +73,10 @@ describe('Engine', ()=>{
 
 			it('multiple instances', ()=>{
 				const [testSystem, fooSystem] = engine.addSystems(
-					new TestSystem('blah'),
+					new TestSystem(23),
 					new FooSystem()
 				)
-				assert.equal((testSystem as TestSystem).name, 'blah')
+				assert.equal((testSystem as TestSystem).age, 23)
 				assert.equal(fooSystem.constructor, FooSystem)
 				assert.equal(testSystem.constructor, TestSystem)
 			})
