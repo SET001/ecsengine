@@ -25,12 +25,6 @@ export class System<T>{
 	componentGroups: Map<number, T> = new Map()
 	groupComponents: ComponentsGroupDefinition
 
-	setGroupComponents(groupComponents: T){
-		Object.entries(groupComponents).forEach(
-			([key, value]) => this.groupComponents[key] = value.constructor
-		)
-	}
-
 	update(){
 		this.componentGroups.forEach(context=>this.execute(context))
 	}

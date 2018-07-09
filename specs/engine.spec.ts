@@ -54,6 +54,14 @@ class TestEntity extends Entity{
 
 class WrongSystem extends System<any>{}
 
+class WrongTestSystemGroup {
+	test: TestComponent
+	foo: FooComponent
+}
+
+@componentsGroup(WrongTestSystemGroup)
+class SystemWithWrongCompGroup extends System<WrongTestSystemGroup>{}
+
 describe('Engine', ()=>{
 
 	var engine: Engine
@@ -78,6 +86,10 @@ describe('Engine', ()=>{
 
 	describe('addSystem', ()=>{
 		describe('wrong system', ()=>{
+			it.skip('asdasd', async()=>{
+				const system = await engine.addSystem(SystemWithWrongCompGroup)
+				// console.log(system)
+			})
 			it('should allow systems with no group components set', async()=>{
 				const [wrongSystem, testSystem] = await engine.addSystems(WrongSystem, TestSystem)
 				assert.isDefined(wrongSystem)
