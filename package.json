@@ -28,7 +28,8 @@
   "dependencies": {
     "async": "^2.6.1",
     "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.2.1"
+    "rxjs": "^6.2.1",
+    "user": "0.0.0"
   },
   "files": [
     "dist/index.d.ts",
