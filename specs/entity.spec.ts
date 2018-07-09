@@ -24,7 +24,20 @@ describe('entity', ()=>{
 		})
 	})
 	describe('hasComponents', ()=>{
-		it('should return false if no components', ()=>{
+		it('should return false if asked component is null', ()=>{
+			const entity = new Entity();
+			assert.isFalse(entity.hasComponents(null))
+		})
+		it('should return false if asked component is undefined', ()=>{
+			const entity = new Entity();
+			assert.isFalse(entity.hasComponents(null))
+		})
+		it('should return false if asked component is empty array', ()=>{
+			const entity = new Entity();
+			assert.isFalse(entity.hasComponents([]))
+		})
+
+		it('should return false if asked component does not exist in entity ', ()=>{
 			const entity = new Entity();
 			assert.isFalse(entity.hasComponents([TestComponent]))
 		})

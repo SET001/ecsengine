@@ -35,8 +35,13 @@ export class Engine{
 
 	_addSystem<G, T extends System<G>>(system: T): Promise<T>{
 		const systemClass = system.constructor as {new(args?): T}
+
+		if (!system.groupComponents || !Object.values(system.groupComponents).length) system.groupComponents = {}
 		if (this.systems.has(systemClass)) return Promise.resolve(this.systems.get(systemClass) as T)
-		const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
+		const hasComponents = filter((component: Component) => {
+			if (!system.groupComponents || !Object.values(system.groupComponents).length) return false
+			return component.entity.hasComponents(Object.values(system.groupComponents))
+		})
 		system.name = systemClass.name
 		this.systems.set(systemClass, system)
 		system.register(
@@ -45,7 +50,7 @@ export class Engine{
 			this.componentRemoved.pipe(hasComponents),
 			this
 		)
-		return system.init()
+		return Promise.resolve(system)
 	}
 
 	addSystem<G, T extends System<G>>(system: {new(args?): T} | T): Promise<T>	{
@@ -59,8 +64,7 @@ export class Engine{
 	addSystems(...systems: Array<{new(args?): System<any>}|System<any>>): Promise<System<any>[]> {
 		return new Promise((resolve, reject)=>{
 			mapSeries(systems, async (system, cb)=>{
-				await this.addSystem(system)
-				cb(null, system)
+				cb(null, await this.addSystem(system))
 			}, (err, result)=>{
 				resolve(result)
 			})
@@ -88,6 +92,7 @@ export class Engine{
 	}
 
 	getEntitiesWithSystemComponents(system: System<any>): Entity[]{
+		if (!system.groupComponents || !Object.values(system.groupComponents).length) return []
 		return this.entities.filter((entity: Entity)=>entity.hasComponents(Object.values(system.groupComponents)))
 	}
 

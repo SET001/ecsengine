@@ -38,6 +38,7 @@ export class Entity{
 	}
 
 	hasComponents(components: {new(): Component}[]): boolean{
+		if (!components || !components.length) return false
 		return components.reduce((count: number, component: {new(): Component})=>
 			this.components.has(component)
 				? ++count

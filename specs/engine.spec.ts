@@ -52,7 +52,7 @@ class TestEntity extends Entity{
 	}
 }
 
-class WrongSystem{}
+class WrongSystem extends System<any>{}
 
 describe('Engine', ()=>{
 
@@ -77,9 +77,19 @@ describe('Engine', ()=>{
 	})
 
 	describe('addSystem', ()=>{
+		describe('wrong system', ()=>{
+			it('should allow systems with no group components set', async()=>{
+				const [wrongSystem, testSystem] = await engine.addSystems(WrongSystem, TestSystem)
+				assert.isDefined(wrongSystem)
+				assert.isDefined(testSystem)
+				assert.equal(testSystem.constructor, TestSystem)
+				assert.equal(wrongSystem.constructor, WrongSystem)
+			})
+		})
 		describe('signatures', ()=>{
 			it('single instanse', async ()=>{
 				const system = await engine.addSystem(new FooSystem())
+				assert.isDefined(system)
 				assert.equal(system.constructor, FooSystem)
 			})
 
@@ -88,7 +98,7 @@ describe('Engine', ()=>{
 				assert.equal(system.constructor, FooSystem)
 			})
 
-			it.only('multiple instances', async ()=>{
+			it('multiple instances', async ()=>{
 				const [testSystem, fooSystem] = await engine.addSystems(
 					new TestSystem(23),
 					new FooSystem()
@@ -128,7 +138,6 @@ describe('Engine', ()=>{
 			const system = await engine.addSystem(TestSystem)
 			engine.componentAdded.subscribe(onComponentAdded)
 			engine.addEntity(new TestEntity())
-			
 			assert.isTrue(onComponentAdded.called)
 			assert.equal(system.componentGroups.size, 1)
 		})

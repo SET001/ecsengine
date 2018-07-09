@@ -65,10 +65,6 @@ export class System<T>{
 
 	}
 
-	init(): Promise<any>{
-		return Promise.resolve(this)
-	}
-
 	register(entities: Entity[], componentAdded: Observable<Component>, componentRemoved: Observable<Component>, engine: Engine){
 		entities.map(entity=>{
 			this.addComponentsGroup(this.getComponentsGroupFromEntity(entity), entity)
