@@ -1,6 +1,7 @@
 import { Component } from './component'
 import { Observable } from 'rxjs'
 import { Entity } from './entity'
+import { Engine } from './engine';
 
 export interface ISystem{
 	update()
@@ -19,6 +20,7 @@ export function componentsGroup(constructor){
 export type ComponentsGroupDefinition = {[s: string]: {new(): Component}}
 
 export class System<T>{
+	engine: Engine
 	name: string
 	componentGroups: Map<number, T> = new Map()
 	groupComponents: ComponentsGroupDefinition
@@ -58,11 +60,16 @@ export class System<T>{
 		)
 		return group
 	}
+
 	remove(entity: Entity){
 
 	}
 
-	init(entities: Entity[], componentAdded: Observable<Component>, componentRemoved: Observable<Component>){
+	init(): Promise<any>{
+		return Promise.resolve(this)
+	}
+
+	register(entities: Entity[], componentAdded: Observable<Component>, componentRemoved: Observable<Component>, engine: Engine){
 		entities.map(entity=>{
 			this.addComponentsGroup(this.getComponentsGroupFromEntity(entity), entity)
 		})
@@ -70,5 +77,6 @@ export class System<T>{
 		this.componentRemoved = componentRemoved
 		componentAdded.subscribe(this.add.bind(this))
 		componentRemoved.subscribe(this.remove.bind(this))
+		this.engine = engine
 	}
 }

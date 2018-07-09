@@ -3,6 +3,7 @@ import { Entity } from './entity';
 import { Component } from './component';
 import { Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { mapSeries } from 'async'
 
 export class Engine{
 	systems: Map<{new(args?): System<any>}, System<any>> = new Map()
@@ -32,21 +33,22 @@ export class Engine{
 		this.entities = this.entities.filter(e=>e.id !== entity.id)
 	}
 
-	_addSystem<G, T extends System<G>>(system: T): T{
+	_addSystem<G, T extends System<G>>(system: T): Promise<T>{
 		const systemClass = system.constructor as {new(args?): T}
-		if (this.systems.has(systemClass)) return this.systems.get(systemClass) as T
+		if (this.systems.has(systemClass)) return Promise.resolve(this.systems.get(systemClass) as T)
 		const hasComponents = filter((component: Component) => component.entity.hasComponents(Object.values(system.groupComponents)))
 		system.name = systemClass.name
 		this.systems.set(systemClass, system)
-		system.init(
+		system.register(
 			this.getEntitiesWithSystemComponents(system),
 			this.componentAdded.pipe(hasComponents),
-			this.componentRemoved.pipe(hasComponents)
+			this.componentRemoved.pipe(hasComponents),
+			this
 		)
-		return system
+		return system.init()
 	}
 
-	addSystem<G, T extends System<G>>(system: {new(args?): T} | T): T	{
+	addSystem<G, T extends System<G>>(system: {new(args?): T} | T): Promise<T>	{
 		if (typeof system === 'function'){
 			return this._addSystem(new system())
 		} else {
@@ -54,8 +56,15 @@ export class Engine{
 		}
 	}
 
-	addSystems(...systems: Array<{new(args?): System<any>}|System<any>>): System<any>[] {
-		return systems.map(this.addSystem.bind(this))
+	addSystems(...systems: Array<{new(args?): System<any>}|System<any>>): Promise<System<any>[]> {
+		return new Promise((resolve, reject)=>{
+			mapSeries(systems, async (system, cb)=>{
+				await this.addSystem(system)
+				cb(null, system)
+			}, (err, result)=>{
+				resolve(result)
+			})
+		})
 	}
 	
 	removeSystem(systemClass: {new(args?): System<any>}){

@@ -17,6 +17,15 @@ class TestSystemGroup {
 @componentsGroup(TestSystemGroup)
 class TestSystem extends System<TestSystemGroup>{
 	constructor(public age: number){super()}
+
+	init(){
+		return new Promise((resolve, reject)=>{
+			setTimeout(()=>{
+				console.log(`${this.constructor.name} initialised`)
+				resolve()
+			}, 1000)
+		})
+	}
 }
 
 class FooSystemGroup {
@@ -25,6 +34,14 @@ class FooSystemGroup {
 @componentsGroup(FooSystemGroup)
 class FooSystem extends System<FooSystemGroup>{
 	foo: string
+	init(){
+		return new Promise((resolve, reject)=>{
+			setTimeout(()=>{
+				console.log(`${this.constructor.name} initialised`)
+				resolve()
+			}, 500)
+		})
+	}
 }
 
 class TestEntity extends Entity{
@@ -61,18 +78,18 @@ describe('Engine', ()=>{
 
 	describe('addSystem', ()=>{
 		describe('signatures', ()=>{
-			it('single instanse', ()=>{
-				const system = engine.addSystem(new FooSystem())
+			it('single instanse', async ()=>{
+				const system = await engine.addSystem(new FooSystem())
 				assert.equal(system.constructor, FooSystem)
 			})
 
-			it('single constructor', ()=>{
-				const system = engine.addSystem(FooSystem)
+			it('single constructor', async ()=>{
+				const system = await engine.addSystem(FooSystem)
 				assert.equal(system.constructor, FooSystem)
 			})
 
-			it('multiple instances', ()=>{
-				const [testSystem, fooSystem] = engine.addSystems(
+			it.only('multiple instances', async ()=>{
+				const [testSystem, fooSystem] = await engine.addSystems(
 					new TestSystem(23),
 					new FooSystem()
 				)
@@ -81,14 +98,14 @@ describe('Engine', ()=>{
 				assert.equal(testSystem.constructor, TestSystem)
 			})
 
-			it('multiple constructors', ()=>{
-				const [testSystem, fooSystem] = engine.addSystems(TestSystem,	FooSystem)
+			it('multiple constructors', async ()=>{
+				const [testSystem, fooSystem] = await engine.addSystems(TestSystem,	FooSystem)
 				assert.equal(fooSystem.constructor, FooSystem)
 				assert.equal(testSystem.constructor, TestSystem)
 			})
 
-			it('mixed instances and constructors', ()=>{
-				const [testSystem, fooSystem] = engine.addSystems(TestSystem,	new FooSystem())
+			it('mixed instances and constructors', async ()=>{
+				const [testSystem, fooSystem] = await engine.addSystems(TestSystem,	new FooSystem())
 				assert.equal(fooSystem.constructor, FooSystem)
 				assert.equal(testSystem.constructor, TestSystem)
 			})
@@ -106,9 +123,9 @@ describe('Engine', ()=>{
 			assert.equal(system.componentGroups.size, 1)
 		})
 
-		it('it should get matching added components throught observable object', ()=>{
+		it('it should get matching added components throught observable object', async ()=>{
 			const onComponentAdded = sinon.spy()
-			const system = engine.addSystem(TestSystem)
+			const system = await engine.addSystem(TestSystem)
 			engine.componentAdded.subscribe(onComponentAdded)
 			engine.addEntity(new TestEntity())
 			
@@ -116,9 +133,9 @@ describe('Engine', ()=>{
 			assert.equal(system.componentGroups.size, 1)
 		})
 
-		it('it should not get not-matching added components throught observable object', ()=>{
+		it('it should not get not-matching added components throught observable object', async ()=>{
 			const onComponentAdded = sinon.spy()
-			const system = engine.addSystem(TestSystem)
+			const system = await engine.addSystem(TestSystem)
 			system.componentAdded.subscribe(onComponentAdded)
 			const entity = new TestEntity();
 			entity.remove(TestComponent);

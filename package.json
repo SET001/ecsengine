@@ -26,6 +26,7 @@
     "sinon": "^6.0.0"
   },
   "dependencies": {
+    "async": "^2.6.1",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.1"
   },
