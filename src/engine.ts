@@ -33,7 +33,7 @@ export class Engine{
 		this.entities = this.entities.filter(e=>e.id !== entity.id)
 	}
 
-	_addSystem<G, T extends System<G>>(system: T): Promise<T>{
+	_addSystem<G, T extends System<G>>(system: T): Promise<System<G>>{
 		const systemClass = system.constructor as {new(args?): T}
 
 		if (!system.groupComponents || !Object.values(system.groupComponents).length) system.groupComponents = {}
@@ -50,10 +50,10 @@ export class Engine{
 			this.componentRemoved.pipe(hasComponents),
 			this
 		)
-		return Promise.resolve(system)
+		return system.init()
 	}
 
-	addSystem<G, T extends System<G>>(system: {new(args?): T} | T): Promise<T>	{
+	addSystem<G, T extends System<G>>(system: {new(args?): T} | T): Promise<System<G>>	{
 		if (typeof system === 'function'){
 			return this._addSystem(new system())
 		} else {

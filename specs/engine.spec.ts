@@ -18,12 +18,11 @@ class TestSystemGroup {
 class TestSystem extends System<TestSystemGroup>{
 	constructor(public age: number){super()}
 
-	init(){
+	init(): Promise<System<TestSystemGroup>>{
 		return new Promise((resolve, reject)=>{
 			setTimeout(()=>{
-				console.log(`${this.constructor.name} initialised`)
-				resolve()
-			}, 1000)
+				resolve(this)
+			}, 10)
 		})
 	}
 }
@@ -34,12 +33,11 @@ class FooSystemGroup {
 @componentsGroup(FooSystemGroup)
 class FooSystem extends System<FooSystemGroup>{
 	foo: string
-	init(){
+	init(): Promise<System<FooSystemGroup>>{
 		return new Promise((resolve, reject)=>{
 			setTimeout(()=>{
-				console.log(`${this.constructor.name} initialised`)
-				resolve()
-			}, 500)
+				resolve(this)
+			}, 50)
 		})
 	}
 }
